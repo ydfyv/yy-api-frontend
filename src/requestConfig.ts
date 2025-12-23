@@ -1,6 +1,6 @@
-﻿import type { RequestOptions } from '@@/plugin-request/request';
-import type { RequestConfig } from '@umijs/max';
-import { message, notification } from 'antd';
+﻿import type { RequestOptions } from "@@/plugin-request/request";
+import type { RequestConfig } from "@umijs/max";
+import { message, notification } from "antd";
 
 // 错误处理方案： 错误类型
 enum ErrorShowType {
@@ -10,6 +10,7 @@ enum ErrorShowType {
   NOTIFICATION = 3,
   REDIRECT = 9,
 }
+
 // 与后端约定的响应数据格式
 interface ResponseStructure {
   success: boolean;
@@ -24,7 +25,12 @@ interface ResponseStructure {
  * pro 自带的错误处理， 可以在这里做自己的改动
  * @doc https://umijs.org/docs/max/request#配置
  */
-export const errorConfig: RequestConfig = {
+
+const isDev = process.env.NODE_ENV === "development" || process.env.CI;
+
+export const requestConfig: RequestConfig = {
+  baseURL: isDev ?  'http://localhost:8101' : 'http://localhost:8111',
+  withCredentials: true,
   // 错误处理： umi@3 的错误处理方案。
   errorConfig: {
     // 错误抛出
@@ -33,7 +39,7 @@ export const errorConfig: RequestConfig = {
         res as unknown as ResponseStructure;
       if (!success) {
         const error: any = new Error(errorMessage);
-        error.name = 'BizError';
+        error.name = "BizError";
         error.info = { errorCode, errorMessage, showType, data };
         throw error; // 抛出自制的错误
       }
@@ -42,7 +48,7 @@ export const errorConfig: RequestConfig = {
     errorHandler: (error: any, opts: any) => {
       if (opts?.skipErrorHandler) throw error;
       // 我们的 errorThrower 抛出的错误。
-      if (error.name === 'BizError') {
+      if (error.name === "BizError") {
         const errorInfo: ResponseStructure | undefined = error.info;
         if (errorInfo) {
           const { errorMessage, errorCode } = errorInfo;
@@ -77,10 +83,10 @@ export const errorConfig: RequestConfig = {
         // 请求已经成功发起，但没有收到响应
         // \`error.request\` 在浏览器中是 XMLHttpRequest 的实例，
         // 而在node.js中是 http.ClientRequest 的实例
-        message.error('None response! Please retry.');
+        message.error("None response! Please retry.");
       } else {
         // 发送请求时出了点问题
-        message.error('Request error, please retry.');
+        message.error("Request error, please retry.");
       }
     },
   },
@@ -89,7 +95,7 @@ export const errorConfig: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理。
-      const url = config?.url?.concat('?token=123');
+      const url = config?.url;
       return { ...config, url };
     },
   ],
@@ -101,7 +107,7 @@ export const errorConfig: RequestConfig = {
       const { data } = response as unknown as ResponseStructure;
 
       if (data?.success === false) {
-        message.error('请求失败！');
+        message.error("请求失败！");
       }
       return response;
     },

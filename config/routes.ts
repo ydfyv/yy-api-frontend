@@ -95,6 +95,18 @@ export default [
     ],
   },
   {
+    path: '/interface',
+    icon: 'table',
+    name: '接口管理',
+    routes: [
+      {
+        path: '/interface/manage',
+        name: '接口列表',
+        component: './interface-info/manage',
+      }
+    ],
+  },
+  {
     path: '/profile',
     name: '详情页',
     icon: 'profile',
