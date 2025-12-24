@@ -12,6 +12,7 @@ import { Button, Input, message, Upload } from 'antd';
 import React from 'react';
 import { queryCity, queryCurrent, queryProvince } from '../service';
 import useStyles from './index.style';
+import {useModel} from "@@/exports";
 
 const validatorPhone = (
   _rule: any,
@@ -33,16 +34,11 @@ const BaseView: React.FC = () => {
   const { data: currentUser, loading } = useRequest(() => {
     return queryCurrent();
   });
+
+  const { initialState } = useModel('@@initialState');
+
   const getAvatarURL = () => {
-    if (currentUser) {
-      if (currentUser.avatar) {
-        return currentUser.avatar;
-      }
-      const url =
-        'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
-      return url;
-    }
-    return '';
+    return initialState?.currentUser?.userAvatar ?? ''
   };
   const handleFinish = async () => {
     message.success('更新基本信息成功');
