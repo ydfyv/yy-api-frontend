@@ -38,8 +38,8 @@ const TableList: React.FC = () => {
       title: "序号",
       dataIndex: "id",
       valueType: "text",
+      width: 80,
       hideInSearch: true,
-      hideInTable: true,
       hideInForm: true,
       render: (_, record, index) => <span>{index + 1}</span>,
     },
@@ -132,6 +132,7 @@ const TableList: React.FC = () => {
     },
     {
       title: "请求方式",
+      width: 100,
       dataIndex: "method",
       // hideInForm: true,
       valueEnum: {
@@ -155,6 +156,7 @@ const TableList: React.FC = () => {
     },
     {
       title: "状态",
+      width: 100,
       dataIndex: "status",
       valueEnum: {
         0: {
@@ -170,6 +172,7 @@ const TableList: React.FC = () => {
     {
       title: "操作",
       key: "action",
+      width: 147,
       valueType: "option",
       render: (_, entity) => (
         <Space size={"middle"}>
