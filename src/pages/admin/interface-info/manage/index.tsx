@@ -1,5 +1,4 @@
-import CreateModal from "@/pages/interface-info/manage/components/CreateModal";
-import UpdateModal from "@/pages/interface-info/manage/components/UpdateModal";
+
 import {
   addInterfaceInfoUsingPost,
   deleteInterfaceInfoUsingPost,
@@ -22,6 +21,8 @@ import React, { useRef, useState } from "react";
 import InterfaceInfoQueryRequest = API.InterfaceInfoQueryRequest;
 import InterfaceInfo = API.InterfaceInfo;
 import InterfaceInfoAddRequest = API.InterfaceInfoAddRequest;
+import CreateModal from "@/pages/admin/interface-info/manage/components/CreateModal";
+import UpdateModal from "@/pages/admin/interface-info/manage/components/UpdateModal";
 
 const TableList: React.FC = () => {
   const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
@@ -175,7 +176,7 @@ const TableList: React.FC = () => {
       width: 147,
       valueType: "option",
       render: (_, entity) => (
-        <Space size={"middle"}>
+        <Space size={"small"}>
           <Button
             type={"link"}
             onClick={() => {

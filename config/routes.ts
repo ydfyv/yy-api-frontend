@@ -95,14 +95,14 @@ export default [
     ],
   },
   {
-    path: '/interface',
+    path: '/admin/interface-info',
     icon: 'table',
     name: '接口管理',
     routes: [
       {
-        path: '/interface/manage',
+        path: '/admin/interface-info/manage',
         name: '接口列表',
-        component: './interface-info/manage',
+        component: './admin/interface-info/manage',
       }
     ],
   },

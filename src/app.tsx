@@ -1,5 +1,4 @@
-import { AvatarDropdown, AvatarName, Footer, Question } from "@/components";
-// import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
+import { AvatarDropdown, AvatarName, Footer } from "@/components";
 import { getLoginUserUsingGet } from "@/services/ant-design-pro/userController";
 import { LinkOutlined } from "@ant-design/icons";
 import type { Settings as LayoutSettings } from "@ant-design/pro-components";
@@ -62,7 +61,7 @@ export const layout: RunTimeLayoutConfig = ({
       src: initialState?.currentUser?.userAvatar,
       title: <AvatarName />,
       render: (_, avatarChildren) => {
-        return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
+        return <AvatarDropdown menu={true}>{avatarChildren}</AvatarDropdown>;
       },
     },
     waterMarkProps: {
@@ -125,19 +124,20 @@ export const layout: RunTimeLayoutConfig = ({
             <Footer/>
           </div>
 
-          {isDev && (
-            <SettingDrawer
-              disableUrlParams
-              enableDarkTheme
-              settings={initialState?.settings}
-              onSettingChange={(settings) => {
-                setInitialState((preInitialState) => ({
-                  ...preInitialState,
-                  settings,
-                }));
-              }}
-            />
-          )}
+          {/*切换布局*/}
+          {/*{isDev && (*/}
+          {/*  <SettingDrawer*/}
+          {/*    disableUrlParams*/}
+          {/*    enableDarkTheme*/}
+          {/*    settings={initialState?.settings}*/}
+          {/*    onSettingChange={(settings) => {*/}
+          {/*      setInitialState((preInitialState) => ({*/}
+          {/*        ...preInitialState,*/}
+          {/*        settings,*/}
+          {/*      }));*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*)}*/}
         </>
       );
     },
