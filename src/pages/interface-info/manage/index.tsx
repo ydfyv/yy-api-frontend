@@ -1,4 +1,5 @@
-import FormModal from "@/pages/interface-info/manage/components/FormModal";
+import CreateModal from "@/pages/interface-info/manage/components/CreateModal";
+import UpdateModal from "@/pages/interface-info/manage/components/UpdateModal";
 import {
   addInterfaceInfoUsingPost,
   deleteInterfaceInfoUsingPost,
@@ -10,10 +11,8 @@ import type {
   ActionType,
   ProColumns,
   ProDescriptionsItemProps,
-  ProFormInstance,
 } from "@ant-design/pro-components";
 import {
-  FooterToolbar,
   PageContainer,
   ProDescriptions,
   ProTable,
@@ -25,35 +24,40 @@ import InterfaceInfo = API.InterfaceInfo;
 import InterfaceInfoAddRequest = API.InterfaceInfoAddRequest;
 
 const TableList: React.FC = () => {
-  const [visible, setVisible] = useState<boolean>(false);
+  const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
+  const [updateModalVisible, setUpdateModalVisible] = useState<boolean>(false);
+  const [model, setModel] = useState<InterfaceInfo>({});
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>(null);
   const [currentRow, setCurrentRow] = useState<InterfaceInfo>();
   const [selectedRowsState, setSelectedRows] = useState<InterfaceInfo[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [modalTitle, setModalTitle] = useState<string>("");
-  const formRef = useRef<ProFormInstance>();
-  const [model, setModel] = useState<InterfaceInfo>({});
-  const [method, setMethod] = useState("");
 
   const columns: ProColumns<InterfaceInfo>[] = [
     {
       title: "序号",
       dataIndex: "id",
       valueType: "text",
-      render: (_, record, index) => <span>{index + 1}</span>,
       hideInSearch: true,
+      hideInTable: true,
       hideInForm: true,
+      render: (_, record, index) => <span>{index + 1}</span>,
     },
     {
       title: "接口名称",
       dataIndex: "name",
+      formItemProps: {
+        rules: [{ required: true }],
+      },
     },
     {
       title: "接口描述",
       dataIndex: "description",
       valueType: "textarea",
       ellipsis: true,
+      formItemProps: {
+        rules: [{ required: true }],
+      },
       // sorter: true,
       // hideInForm: true,
       // renderText: (val: string) => `${val}万`,
@@ -62,6 +66,19 @@ const TableList: React.FC = () => {
       title: "接口路径",
       dataIndex: "url",
       hideInSearch: true,
+      formItemProps: {
+        rules: [
+          { required: true },
+          {
+            validator: (_rule: any, value: string, callback) => {
+              if (value && !/^https?:\/\//.test(value)) {
+                callback("请输入正确的接口路径");
+              }
+              callback();
+            },
+          },
+        ],
+      },
     },
     {
       title: "请求头",
@@ -69,6 +86,24 @@ const TableList: React.FC = () => {
       valueType: "textarea",
       hideInSearch: true,
       ellipsis: true,
+      formItemProps: {
+        rules: [
+          {
+            validator: (_rule, _value, callback) => {
+              if (_value) {
+                try {
+                  JSON.parse(_value as string);
+                  callback();
+                } catch (e) {
+                  callback("请输入正确的JSON格式");
+                }
+              } else {
+                callback();
+              }
+            },
+          },
+        ],
+      },
     },
     {
       title: "响应头",
@@ -76,6 +111,24 @@ const TableList: React.FC = () => {
       valueType: "textarea",
       hideInSearch: true,
       ellipsis: true,
+      formItemProps: {
+        rules: [
+          {
+            validator: (_rule, _value, callback) => {
+              if (_value) {
+                try {
+                  JSON.parse(_value as string);
+                  callback();
+                } catch (e) {
+                  callback("请输入正确的JSON格式");
+                }
+              } else {
+                callback();
+              }
+            },
+          },
+        ],
+      },
     },
     {
       title: "请求方式",
@@ -123,8 +176,8 @@ const TableList: React.FC = () => {
           <Button
             type={"link"}
             onClick={() => {
-              openModal("编辑接口", entity);
-              setMethod('edit');
+              setUpdateModalVisible(true);
+              setModel(entity);
             }}
           >
             编辑
@@ -132,10 +185,7 @@ const TableList: React.FC = () => {
           <Popconfirm
             title={"确定删除吗？"}
             onConfirm={async () => {
-              const success = await handleRemove(entity);
-              if (success) {
-                actionRef?.current?.reload();
-              }
+              await handleRemove(entity);
             }}
           >
             <Button type={"link"} danger>
@@ -185,50 +235,34 @@ const TableList: React.FC = () => {
     // },
   ];
 
-  /**
-   * 打开模态框
-   * @param title
-   * @param fields
-   */
-  const openModal = (title: string, fields: InterfaceInfo) => {
-    setModalTitle(title);
-    setVisible(true);
-    setModel(fields);
-  };
 
   /**
    * 添加接口
    */
-  const handleAdd = () => async (
-    fields: InterfaceInfoAddRequest
-  ) => {
+  const handleAdd = async (fields: InterfaceInfoAddRequest) => {
     try {
       const res = await addInterfaceInfoUsingPost(fields);
-      if (res.code !== 0) {
-        message.warning(res.message || "添加失败");
-      }
       message.success("添加成功");
+      setCreateModalVisible(false);
       actionRef.current?.reload();
-    } catch (error) {
-      message.error("网络错误，请稍后重试");
+    } catch (error: any) {
+      message.error("添加失败！" + error);
     }
   };
 
   /**
    * 编辑接口
    */
-  const handleEdit = () => (fields: InterfaceInfo) => async () => {
-      try {
-        const res = await editInterfaceInfoUsingPost(fields);
-        if (res.code !== 0) {
-          message.warning(res.message || "编辑失败");
-        }
-        message.success("编辑成功");
-        actionRef.current?.reload();
-      } catch (error) {
-        message.error("网络错误，请稍后重试");
-      }
-    };
+  const handleEdit = async (fields: InterfaceInfo) => {
+    try {
+      const res = await editInterfaceInfoUsingPost(fields);
+      message.success("编辑成功！");
+      setUpdateModalVisible(false);
+      actionRef.current?.reload();
+    } catch (error: any) {
+      message.error("编辑失败！" + error);
+    }
+  };
 
   /**
    * 删除节点
@@ -239,13 +273,10 @@ const TableList: React.FC = () => {
       const res = await deleteInterfaceInfoUsingPost({
         id: fields.id,
       });
-      if (res.code !== 0) throw new Error(res?.message);
       message.success("删除成功");
       actionRef?.current?.reload();
-      return true;
     } catch (_error) {
       message.error("删除失败！" + _error);
-      return false;
     }
   };
 
@@ -264,17 +295,18 @@ const TableList: React.FC = () => {
             type="primary"
             key="primary"
             onClick={() => {
-              openModal("新建接口", {});
-              setMethod('add');
+              setCreateModalVisible(true);
             }}
           >
             <PlusOutlined /> 新建
           </Button>,
         ]}
+        pagination={{
+          pageSize: 10,
+          showQuickJumper: true
+        }}
         request={async (params: InterfaceInfoQueryRequest, sort, filter) => {
-          const res = await listInterfaceInfoByPageUsingPost({
-            ...params,
-          });
+          const res = await listInterfaceInfoByPageUsingPost(params);
           return {
             data: res?.data?.records,
             success: res?.code === 0,
@@ -283,52 +315,55 @@ const TableList: React.FC = () => {
         }}
         columns={columns}
         rowSelection={{
-          selectedRowKeys,
           type: "radio",
+          selectedRowKeys,
           onChange: (selectedRowKeys, selectedRows) => {
             setSelectedRows(selectedRows);
             setSelectedRowKeys(selectedRowKeys);
           },
         }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择{" "}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>{" "}
-              项 &nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              // await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-          <Button type="primary">批量审批</Button>
-        </FooterToolbar>
-      )}
+      {/*{selectedRowsState?.length > 0 && (*/}
+      {/*  <FooterToolbar*/}
+      {/*    extra={*/}
+      {/*      <div>*/}
+      {/*        已选择{" "}*/}
+      {/*        <a*/}
+      {/*          style={{*/}
+      {/*            fontWeight: 600,*/}
+      {/*          }}*/}
+      {/*        >*/}
+      {/*          {selectedRowsState.length}*/}
+      {/*        </a>{" "}*/}
+      {/*        项 &nbsp;&nbsp;*/}
+      {/*      </div>*/}
+      {/*    }*/}
+      {/*  >*/}
+      {/*    <Button*/}
+      {/*      onClick={async () => {*/}
+      {/*        // await handleRemove(selectedRowsState);*/}
+      {/*        setSelectedRows([]);*/}
+      {/*        actionRef.current?.reloadAndRest?.();*/}
+      {/*      }}*/}
+      {/*    >*/}
+      {/*      批量删除*/}
+      {/*    </Button>*/}
+      {/*  </FooterToolbar>*/}
+      {/*)}*/}
 
-      <FormModal
-        title={modalTitle}
-        modalVisible={visible}
+      <CreateModal
+        columns={columns}
+        onCancel={() => setCreateModalVisible(false)}
+        onSubmit={handleAdd}
+        visible={createModalVisible}
+      />
+
+      <UpdateModal
+        visible={updateModalVisible}
         columns={columns}
         model={model}
-        onCancel={() => {
-          setVisible(false);
-        }}
-        onSubmit={method === 'add' ? handleAdd : handleEdit}
+        onCancel={() => setUpdateModalVisible(false)}
+        onSubmit={handleEdit}
       />
 
       <Drawer
