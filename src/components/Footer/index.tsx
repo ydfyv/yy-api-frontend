@@ -10,12 +10,12 @@ const Footer: React.FC = () => {
       }}
       copyright="Powered by 阿狸"
       links={[
-        // {
-        //   key: 'Ant Design Pro',
-        //   title: 'Ant Design Pro',
-        //   href: 'https://pro.ant.design',
-        //   blankTarget: true,
-        // },
+        {
+          key: 'name',
+          title: '程序员阿狸',
+          href: 'https://github.com/ydfyv',
+          blankTarget: true,
+        },
         {
           key: 'github',
           title: <GithubOutlined />,
