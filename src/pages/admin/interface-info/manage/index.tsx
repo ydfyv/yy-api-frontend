@@ -1,9 +1,11 @@
-
+import CreateModal from "@/pages/admin/interface-info/manage/components/CreateModal";
+import UpdateModal from "@/pages/admin/interface-info/manage/components/UpdateModal";
 import {
   addInterfaceInfoUsingPost,
   deleteInterfaceInfoUsingPost,
   editInterfaceInfoUsingPost,
-  listInterfaceInfoByPageUsingPost,
+  listInterfaceInfoByPageUsingPost, offlineUsingPost,
+  onlineUsingPost,
 } from "@/services/ant-design-pro/interfaceInfoController";
 import { PlusOutlined } from "@ant-design/icons";
 import type {
@@ -21,8 +23,6 @@ import React, { useRef, useState } from "react";
 import InterfaceInfoQueryRequest = API.InterfaceInfoQueryRequest;
 import InterfaceInfo = API.InterfaceInfo;
 import InterfaceInfoAddRequest = API.InterfaceInfoAddRequest;
-import CreateModal from "@/pages/admin/interface-info/manage/components/CreateModal";
-import UpdateModal from "@/pages/admin/interface-info/manage/components/UpdateModal";
 
 const TableList: React.FC = () => {
   const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
@@ -135,6 +135,9 @@ const TableList: React.FC = () => {
       title: "请求方式",
       width: 100,
       dataIndex: "method",
+      formItemProps: {
+        rules: [{ required: true }],
+      },
       // hideInForm: true,
       valueEnum: {
         GET: {
@@ -173,7 +176,6 @@ const TableList: React.FC = () => {
     {
       title: "操作",
       key: "action",
-      width: 147,
       valueType: "option",
       render: (_, entity) => (
         <Space size={"small"}>
@@ -198,6 +200,36 @@ const TableList: React.FC = () => {
           </Popconfirm>
         </Space>
       ),
+    },
+    {
+      title: "接口上下线",
+      key: "line",
+      valueType: "option",
+      render: (_, entity) =>
+        entity.status === "1" ? (
+          <Popconfirm
+            title={"确定下线吗？"}
+            onConfirm={async () => {
+              await handleOffline(entity);
+            }}
+          >
+            <Button danger size={"small"} type={"dashed"}>
+              下线
+            </Button>
+          </Popconfirm>
+        ) : (
+          <Button
+            color="primary"
+            variant="outlined"
+            type={"dashed"}
+            size={"small"}
+            onClick={async () => {
+              await handleOnline(entity);
+            }}
+          >
+            上线
+          </Button>
+        ),
     },
     // {
     //   title: "上次调度时间",
@@ -239,7 +271,6 @@ const TableList: React.FC = () => {
     // },
   ];
 
-
   /**
    * 添加接口
    */
@@ -264,7 +295,7 @@ const TableList: React.FC = () => {
       setUpdateModalVisible(false);
       actionRef.current?.reload();
     } catch (error: any) {
-      message.error("编辑失败！" + error);
+      message.error("编辑失败！" + error.message);
     }
   };
 
@@ -279,8 +310,38 @@ const TableList: React.FC = () => {
       });
       message.success("删除成功");
       actionRef?.current?.reload();
-    } catch (_error) {
-      message.error("删除失败！" + _error);
+    } catch (_error: any) {
+      message.error("删除失败！" + _error.message);
+    }
+  };
+
+  /**
+   * 接口上线
+   */
+  const handleOnline = async (fields: InterfaceInfo) => {
+    try {
+      const res = await onlineUsingPost({
+        id: fields.id,
+      });
+      message.success("上线成功");
+      actionRef?.current?.reload();
+    } catch (_error: any) {
+      message.error("上线失败！" + _error.message);
+    }
+  };
+
+  /**
+   * 接口下线
+   */
+  const handleOffline = async (fields: InterfaceInfo) => {
+    try {
+      const res = await offlineUsingPost({
+        id: fields.id,
+      });
+      message.success("下线成功");
+      actionRef?.current?.reload();
+    } catch (_error: any) {
+      message.error("下线失败！" + _error.message);
     }
   };
 
@@ -307,7 +368,7 @@ const TableList: React.FC = () => {
         ]}
         pagination={{
           pageSize: 10,
-          showQuickJumper: true
+          showQuickJumper: true,
         }}
         request={async (params: InterfaceInfoQueryRequest, sort, filter) => {
           const res = await listInterfaceInfoByPageUsingPost(params);

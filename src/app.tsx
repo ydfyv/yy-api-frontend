@@ -1,10 +1,12 @@
 import { AvatarDropdown, AvatarName, Footer } from "@/components";
 import { getLoginUserUsingGet } from "@/services/ant-design-pro/userController";
-import { LinkOutlined } from "@ant-design/icons";
-import type { Settings as LayoutSettings } from "@ant-design/pro-components";
+import {
+  Settings as LayoutSettings,
+  SettingDrawer, PageLoading,
+} from "@ant-design/pro-components";
 import "@ant-design/v5-patch-for-react-19";
 import type { RequestConfig, RunTimeLayoutConfig } from "@umijs/max";
-import { history, Link } from "@umijs/max";
+import { history } from "@umijs/max";
 import defaultSettings from "../config/defaultSettings";
 import { requestConfig } from "./requestConfig";
 
@@ -94,33 +96,42 @@ export const layout: RunTimeLayoutConfig = ({
         width: "331px",
       },
     ],
-    links: isDev
-      ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
-      : [],
+    // links: isDev
+    //   ? [
+    //       <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+    //         <LinkOutlined />
+    //         <span>OpenAPI 文档</span>
+    //       </Link>,
+    //     ]
+    //   : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
-      // if (initialState?.loading) return <PageLoading />;
+      if (initialState?.loading) return <PageLoading />;
       return (
         <>
           <div
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              minHeight: '95vh',
+              display: "flex",
+              flexDirection: "column",
+              minHeight: "95vh",
             }}
           >
-            <div style={{flex: 1}}>
+            <div
+              style={{
+                flex: 1,
+                maxWidth: "1600px",
+                margin: "0 auto",
+                width: "100%",
+                padding: "0 24px",
+                boxSizing: "border-box",
+              }}
+            >
               {children}
             </div>
-            <Footer/>
+            <Footer />
           </div>
 
           {/*切换布局*/}
