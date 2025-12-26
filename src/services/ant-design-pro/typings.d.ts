@@ -1,5 +1,4 @@
 declare namespace API {
-
   type BaseResponseBoolean_ = {
     code?: number;
     data?: boolean;
@@ -125,16 +124,20 @@ declare namespace API {
     id?: number;
   };
 
+  type IdRequest = {
+    id?: number;
+  };
+
   type InterfaceInfo = {
     createTime?: string;
     description?: string;
     id?: number;
     isDelete?: number;
-    method?: number;
+    method?: string;
     name?: string;
     requestHeader?: string;
     responseHeader?: string;
-    status?: number;
+    status?: string;
     updateTime?: string;
     url?: string;
     userId?: number;
@@ -142,7 +145,7 @@ declare namespace API {
 
   type InterfaceInfoAddRequest = {
     description?: string;
-    method?: number;
+    method?: string;
     name?: string;
     requestHeader?: string;
     responseHeader?: string;
@@ -152,11 +155,11 @@ declare namespace API {
   type InterfaceInfoEditRequest = {
     description?: string;
     id?: number;
-    method?: number;
+    method?: string;
     name?: string;
     requestHeader?: string;
     responseHeader?: string;
-    status?: number;
+    status?: string;
     url?: string;
   };
 
@@ -164,12 +167,12 @@ declare namespace API {
     current?: number;
     description?: string;
     id?: number;
-    method?: number;
+    method?: string;
     name?: string;
     pageSize?: number;
     sortField?: string;
     sortOrder?: string;
-    status?: number;
+    status?: string;
     url?: string;
     userId?: number;
   };
@@ -200,8 +203,10 @@ declare namespace API {
   };
 
   type LoginUserVO = {
+    accessKey?: string;
     createTime?: string;
     id?: number;
+    secretKey?: string;
     updateTime?: string;
     userAvatar?: string;
     userName?: string;
@@ -378,10 +383,12 @@ declare namespace API {
   };
 
   type User = {
+    accessKey?: string;
     createTime?: string;
     id?: number;
     isDelete?: number;
     mpOpenId?: string;
+    secretKey?: string;
     unionId?: string;
     updateTime?: string;
     userAccount?: string;
@@ -443,8 +450,10 @@ declare namespace API {
   };
 
   type UserVO = {
+    accessKey?: string;
     createTime?: string;
     id?: number;
+    secretKey?: string;
     userAvatar?: string;
     userName?: string;
     userProfile?: string;

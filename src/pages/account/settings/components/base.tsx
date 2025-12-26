@@ -1,4 +1,6 @@
-import { UploadOutlined } from '@ant-design/icons';
+import { updateSecretKeyUsingPost } from "@/services/ant-design-pro/userController";
+import { useModel } from "@@/exports";
+import { CopyOutlined, RedoOutlined, UploadOutlined } from "@ant-design/icons";
 import {
   ProForm,
   ProFormDependency,
@@ -6,24 +8,32 @@ import {
   ProFormSelect,
   ProFormText,
   ProFormTextArea,
-} from '@ant-design/pro-components';
-import { useRequest } from '@umijs/max';
-import { Button, Input, message, Upload } from 'antd';
-import React from 'react';
-import { queryCity, queryCurrent, queryProvince } from '../service';
-import useStyles from './index.style';
-import {useModel} from "@@/exports";
+} from "@ant-design/pro-components";
+import { useRequest } from "@umijs/max";
+import {
+  Button,
+  Descriptions,
+  DescriptionsProps,
+  Input,
+  message,
+  Space,
+  Tooltip,
+  Upload,
+} from "antd";
+import React from "react";
+import { queryCity, queryCurrent, queryProvince } from "../service";
+import useStyles from "./index.style";
 
 const validatorPhone = (
   _rule: any,
   value: string[],
-  callback: (message?: string) => void,
+  callback: (message?: string) => void
 ) => {
   if (!value[0]) {
-    callback('Please input your area code!');
+    callback("Please input your area code!");
   }
   if (!value[1]) {
-    callback('Please input your phone number!');
+    callback("Please input your phone number!");
   }
   callback();
 };
@@ -35,14 +45,48 @@ const BaseView: React.FC = () => {
     return queryCurrent();
   });
 
-  const { initialState } = useModel('@@initialState');
+  const { initialState, refresh } = useModel("@@initialState");
 
   const getAvatarURL = () => {
-    return initialState?.currentUser?.userAvatar ?? ''
+    return initialState?.currentUser?.userAvatar ?? "";
   };
   const handleFinish = async () => {
-    message.success('更新基本信息成功');
+    message.success("更新基本信息成功");
   };
+
+  const items: DescriptionsProps["items"] = [
+    {
+      key: "accessKey",
+      label: "accessKey",
+      children: initialState?.currentUser?.accessKey,
+    },
+    {
+      key: "secretKey",
+      label: "secretKey",
+      children: initialState?.currentUser?.secretKey,
+    },
+  ];
+
+  const updateSecret = async () => {
+    try {
+      await updateSecretKeyUsingPost({ id: initialState?.currentUser?.id });
+      refresh();
+    } catch (error: any) {
+      message.warning("更新失败！" + error.message);
+    }
+  };
+
+  const handleCopy = async () => {
+    console.log("copy....");
+    const template = `accessKey: ${initialState?.currentUser?.accessKey}\nsecretKey: ${initialState?.currentUser?.secretKey}`;
+    try {
+      await navigator.clipboard.writeText(template);
+      message.success("复制成功！");
+    } catch (error: any) {
+      message.error(`复制失败！${error.message}`);
+    }
+  };
+
   return (
     <div className={styles.baseView}>
       {loading ? null : (
@@ -53,13 +97,13 @@ const BaseView: React.FC = () => {
               onFinish={handleFinish}
               submitter={{
                 searchConfig: {
-                  submitText: '更新基本信息',
+                  submitText: "更新基本信息",
                 },
                 render: (_, dom) => dom[1],
               }}
               initialValues={{
                 ...currentUser,
-                phone: currentUser?.phone.split('-'),
+                phone: currentUser?.phone.split("-"),
               }}
               hideRequiredMark
             >
@@ -70,7 +114,7 @@ const BaseView: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请输入您的邮箱!',
+                    message: "请输入您的邮箱!",
                   },
                 ]}
               />
@@ -81,7 +125,7 @@ const BaseView: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请输入您的昵称!',
+                    message: "请输入您的昵称!",
                   },
                 ]}
               />
@@ -91,7 +135,7 @@ const BaseView: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请输入个人简介!',
+                    message: "请输入个人简介!",
                   },
                 ]}
                 placeholder="个人简介"
@@ -103,13 +147,13 @@ const BaseView: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请输入您的国家或地区!',
+                    message: "请输入您的国家或地区!",
                   },
                 ]}
                 options={[
                   {
-                    label: '中国',
-                    value: 'China',
+                    label: "中国",
+                    value: "China",
                   },
                 ]}
               />
@@ -119,7 +163,7 @@ const BaseView: React.FC = () => {
                   rules={[
                     {
                       required: true,
-                      message: '请输入您的所在省!',
+                      message: "请输入您的所在省!",
                     },
                   ]}
                   width="sm"
@@ -138,7 +182,7 @@ const BaseView: React.FC = () => {
                     });
                   }}
                 />
-                <ProFormDependency name={['province']}>
+                <ProFormDependency name={["province"]}>
                   {({ province }) => {
                     return (
                       <ProFormSelect
@@ -150,7 +194,7 @@ const BaseView: React.FC = () => {
                         rules={[
                           {
                             required: true,
-                            message: '请输入您的所在城市!',
+                            message: "请输入您的所在城市!",
                           },
                         ]}
                         disabled={!province}
@@ -158,7 +202,7 @@ const BaseView: React.FC = () => {
                           if (!province?.key) {
                             return [];
                           }
-                          return queryCity(province.key || '').then(
+                          return queryCity(province.key || "").then(
                             ({ data }) => {
                               return data.map((item) => {
                                 return {
@@ -166,7 +210,7 @@ const BaseView: React.FC = () => {
                                   value: item.id,
                                 };
                               });
-                            },
+                            }
                           );
                         }}
                       />
@@ -181,7 +225,7 @@ const BaseView: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请输入您的街道地址!',
+                    message: "请输入您的街道地址!",
                   },
                 ]}
               />
@@ -191,7 +235,7 @@ const BaseView: React.FC = () => {
                 rules={[
                   {
                     required: true,
-                    message: '请输入您的联系电话!',
+                    message: "请输入您的联系电话!",
                   },
                   {
                     validator: validatorPhone,
@@ -204,7 +248,14 @@ const BaseView: React.FC = () => {
             </ProForm>
           </div>
           <div className={styles.right}>
-            <AvatarView avatar={getAvatarURL()} />
+            <Space direction={"vertical"} size={"large"}>
+              <AvatarView avatar={getAvatarURL()} />
+              <SecretKey
+                items={items}
+                update={updateSecret}
+                handleCopy={handleCopy}
+              />
+            </Space>
           </div>
         </>
       )}
@@ -230,6 +281,50 @@ const AvatarView = ({ avatar }: { avatar: string }) => {
           </Button>
         </div>
       </Upload>
+    </>
+  );
+};
+
+const SecretKey = ({
+  items,
+  update,
+  handleCopy,
+}: {
+  items: DescriptionsProps["items"];
+  update: () => Promise<void>;
+  handleCopy: () => Promise<void>;
+}) => {
+  return (
+    <>
+      <Space direction={"vertical"} size={"small"}>
+        <Descriptions
+          title="访问秘钥"
+          items={items}
+          column={1}
+          labelStyle={{ width: "80px", justifyContent: 'flex-end' }}
+          extra={
+            <Tooltip title="复制密钥">
+              <CopyOutlined
+                style={{ fontSize: "16px", color: "#1890ff" }}
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  await handleCopy();
+                }}
+              />
+            </Tooltip>
+          }
+        />
+        <Button
+          type="primary"
+          size={"small"}
+          onClick={async () => {
+            await update();
+          }}
+        >
+          <RedoOutlined />
+          生成秘钥
+        </Button>
+      </Space>
     </>
   );
 };

@@ -2,7 +2,6 @@ import { AvatarDropdown, AvatarName, Footer } from "@/components";
 import { getLoginUserUsingGet } from "@/services/ant-design-pro/userController";
 import { LinkOutlined } from "@ant-design/icons";
 import type { Settings as LayoutSettings } from "@ant-design/pro-components";
-import { SettingDrawer } from "@ant-design/pro-components";
 import "@ant-design/v5-patch-for-react-19";
 import type { RequestConfig, RunTimeLayoutConfig } from "@umijs/max";
 import { history, Link } from "@umijs/max";
