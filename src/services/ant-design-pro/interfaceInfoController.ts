@@ -17,6 +17,21 @@ export async function addInterfaceInfoUsingPost(
   });
 }
 
+/** debugInterface POST /api/interfaceInfo/debugInterface */
+export async function debugInterfaceUsingPost(
+  body: string,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseString_>("/api/interfaceInfo/debugInterface", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** deleteInterfaceInfo POST /api/interfaceInfo/delete */
 export async function deleteInterfaceInfoUsingPost(
   body: API.DeleteRequest,

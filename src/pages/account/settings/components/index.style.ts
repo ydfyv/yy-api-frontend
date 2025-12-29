@@ -18,7 +18,7 @@ const useStyles = createStyles(({ token }) => {
     },
     right: {
       flex: '1',
-      paddingLeft: '70px',
+      paddingLeft: '104px',
       [`@media screen and (max-width: ${token.screenXL}px)`]: {
         display: 'flex',
         flexDirection: 'column',

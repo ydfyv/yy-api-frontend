@@ -1,16 +1,15 @@
-import { Link } from '@umijs/max';
-import { Button, Card, Result } from 'antd';
+import { history } from "@@/core/history";
+import { Button, Card, Image, Result } from "antd";
 
 export default () => (
   <Card variant="borderless">
     <Result
-      status="403"
-      title="403"
-      subTitle="Sorry, you are not authorized to access this page."
+      icon={<Image src="/assets/403.png" width={500} preview={false} />}
+      subTitle={"抱歉，你无权访问此页面"}
       extra={
-        <Link to="/">
-          <Button type="primary">Back to home</Button>
-        </Link>
+        <Button type="primary" onClick={() => history.push("/")}>
+          {"返回首页"}
+        </Button>
       }
     />
   </Card>
