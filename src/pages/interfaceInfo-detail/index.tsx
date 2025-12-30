@@ -13,6 +13,8 @@ import {
 } from "antd";
 import React, { useEffect, useState } from "react";
 import InterfaceInfoVO = API.InterfaceInfoVO;
+import {PageContainer} from "@ant-design/pro-components";
+
 
 const InterfaceInfoDetail: React.FC = () => {
   const params = useParams();
@@ -44,7 +46,7 @@ const InterfaceInfoDetail: React.FC = () => {
   }, []);
 
   return (
-    <Card style={{ minHeight: "850px" }}>
+    <PageContainer style={{ minHeight: "850px" }}>
       <Row justify="space-around">
         <Col span={11}>
           <Card>
@@ -57,27 +59,12 @@ const InterfaceInfoDetail: React.FC = () => {
               <DebugView />
             </Tabs.TabPane>
             <Tabs.TabPane tab="代码示例" key="2">
-              <CodeEditorView
-                code={`class Main {
-
-    public static void main(String[] args) {
-        String jsonStr = "{\\"name\\":\\"阿狸\\"}";
-
-        Gson gson = new Gson();
-        com.yy.yyapiclientsdk.model.User user = gson.fromJson(jsonStr, com.yy.yyapiclientsdk.model.User.class);
-        // 创建API调用客户端（输入AK、SK）
-        YyApiClient yyApiClient = new YyApiClient( "7fbd0ed36482f8f4abf19061e3b995ac", "111bd3c9d96caf079ba183f095ef091d");
-        String result = yyApiClient.getNameByPost(user);
-
-        System.out.println("调用结果=======>" + result);
-    }
-}`}
-              />
+              <CodeEditorView/>
             </Tabs.TabPane>
           </Tabs>
         </Col>
       </Row>
-    </Card>
+    </PageContainer>
   );
 };
 

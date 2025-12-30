@@ -20,16 +20,11 @@ const DebugView: React.FC = () => {
 
   return (
     <Card>
-      展示调用文档
-      <hr />
       <SwaggerUI
         url="/api/v2/api-docs?group=api"
         requestInterceptor={(req: { url: string }) => {
-          // 把 http://localhost:8101/api/... 改成 /api/...
           if (req.url?.startsWith("http://localhost:8101/api/api")) {
-            console.log('进去了。。。。', req.url)
             req.url = req.url.replace("http://localhost:8101/api/api", "http://localhost:8101/api");
-            console.log('进去了。。。。', req.url)
           }
           return req;
         }}
