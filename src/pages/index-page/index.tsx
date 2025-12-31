@@ -39,7 +39,6 @@ const indexPage: React.FC = () => {
         }}
         onDataSourceChange={setDataSource}
         pagination={{
-          current: 1,
           pageSize: 10,
         }}
         request={async (params) => {
