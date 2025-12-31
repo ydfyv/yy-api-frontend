@@ -322,7 +322,7 @@ const SecretKey = ({
           }}
         >
           <RedoOutlined />
-          生成秘钥
+          更新密钥
         </Button>
       </Space>
     </>

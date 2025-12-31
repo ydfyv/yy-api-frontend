@@ -1,308 +1,193 @@
-import { history, Link, useRequest } from '@umijs/max';
-import {
-  Button,
-  Col,
-  Form,
-  Input,
-  message,
-  Popover,
-  Progress,
-  Row,
-  Select,
-  Space,
-} from 'antd';
-import type { Store } from 'antd/es/form/interface';
-import type { FC } from 'react';
-import { useEffect, useState } from 'react';
-import type { StateType } from './service';
-import { fakeRegister } from './service';
-import useStyles from './styles';
+import { Footer } from "@/components";
+import { userRegisterUsingPost } from "@/services/ant-design-pro/userController";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { LoginForm, ProFormText } from "@ant-design/pro-components";
+import { Helmet, useNavigate } from "@umijs/max";
+import { Button, Form, message, Tabs } from "antd";
+import { createStyles } from "antd-style";
+import type { FC } from "react";
+import { useState } from "react";
+import Settings from "../../../../config/defaultSettings";
+import UserRegisterRequest = API.UserRegisterRequest;
 
-const FormItem = Form.Item;
-const { Option } = Select;
+const useStyles = createStyles(({ token }) => {
+  return {
+    action: {
+      marginLeft: "8px",
+      color: "rgba(0, 0, 0, 0.2)",
+      fontSize: "24px",
+      verticalAlign: "middle",
+      cursor: "pointer",
+      transition: "color 0.3s",
+      "&:hover": {
+        color: token.colorPrimaryActive,
+      },
+    },
+    lang: {
+      width: 42,
+      height: 42,
+      lineHeight: "42px",
+      position: "fixed",
+      right: 16,
+      borderRadius: token.borderRadius,
+      ":hover": {
+        backgroundColor: token.colorBgTextHover,
+      },
+    },
+    container: {
+      display: "flex",
+      flexDirection: "column",
+      height: "100vh",
+      overflow: "auto",
+      backgroundImage:
+        "url('https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/V-_oS6r-i7wAAAAAAAAAAAAAFl94AQBr')",
+      backgroundSize: "100% 100%",
+    },
+  };
+});
 
-const passwordProgressMap: {
-  ok: 'success';
-  pass: 'normal';
-  poor: 'exception';
-} = {
-  ok: 'success',
-  pass: 'normal',
-  poor: 'exception',
-};
 const Register: FC = () => {
   const { styles } = useStyles();
-  const [count, setCount]: [number, any] = useState(0);
-  const [open, setVisible]: [boolean, any] = useState(false);
-  const [prefix, setPrefix]: [string, any] = useState('86');
-  const [popover, setPopover]: [boolean, any] = useState(false);
-  const confirmDirty = false;
-  let interval: number | undefined;
-
-  const passwordStatusMap = {
-    ok: (
-      <div className={styles.success}>
-        <span>强度：强</span>
-      </div>
-    ),
-    pass: (
-      <div className={styles.warning}>
-        <span>强度：中</span>
-      </div>
-    ),
-    poor: (
-      <div className={styles.error}>
-        <span>强度：太短</span>
-      </div>
-    ),
-  };
-
+  const navigate = useNavigate();
+  const [type, setType] = useState<string>("register");
   const [form] = Form.useForm();
-  useEffect(
-    () => () => {
-      clearInterval(interval);
-    },
-    [interval],
-  );
-  const onGetCaptcha = () => {
-    let counts = 59;
-    setCount(counts);
-    interval = window.setInterval(() => {
-      counts -= 1;
-      setCount(counts);
-      if (counts === 0) {
-        clearInterval(interval);
-      }
-    }, 1000);
-  };
-  const getPasswordStatus = () => {
-    const value = form.getFieldValue('password');
-    if (value && value.length > 9) {
-      return 'ok';
-    }
-    if (value && value.length > 5) {
-      return 'pass';
-    }
-    return 'poor';
-  };
-  const { loading: submitting, run: register } = useRequest<{
-    data: StateType;
-  }>(fakeRegister, {
-    manual: true,
-    onSuccess: (data, params) => {
-      if (data.status === 'ok') {
-        message.success('注册成功！');
-        history.push({
-          pathname: `/user/register-result?account=${params[0].email}`,
-        });
-      }
-    },
-  });
-  const onFinish = (values: Store) => {
-    register(values);
-  };
+  const [loading, setLoading] = useState<boolean>(false);
+
   const checkConfirm = (_: any, value: string) => {
     const promise = Promise;
-    if (value && value !== form.getFieldValue('password')) {
-      return promise.reject('两次输入的密码不匹配!');
+    if (value && value !== form.getFieldValue("userPassword")) {
+      return promise.reject("两次输入的密码不匹配!");
     }
     return promise.resolve();
   };
-  const checkPassword = (_: any, value: string) => {
-    const promise = Promise;
-    // 没有值的情况
-    if (!value) {
-      setVisible(!!value);
-      return promise.reject('请输入密码!');
+
+  const registerSubmit = async (params: UserRegisterRequest) => {
+    setLoading(true);
+
+    try {
+      const res = await userRegisterUsingPost(params);
+      if (res.code === 0) {
+        message.success("注册成功");
+        navigate("/user/login");
+      }
+    } catch (error: any) {
+      message.warning(error.message);
     }
-    // 有值的情况
-    if (!open) {
-      setVisible(!!value);
-    }
-    setPopover(!popover);
-    if (value.length < 6) {
-      return promise.reject('');
-    }
-    if (value && confirmDirty) {
-      form.validateFields(['confirm']);
-    }
-    return promise.resolve();
+    setLoading(false);
   };
-  const changePrefix = (value: string) => {
-    setPrefix(value);
-  };
-  const renderPasswordProgress = () => {
-    const value = form.getFieldValue('password');
-    const passwordStatus = getPasswordStatus();
-    return value?.length ? (
-      <div
-        className={styles[`progress-${passwordStatus}` as keyof typeof styles]}
-      >
-        <Progress
-          status={passwordProgressMap[passwordStatus]}
-          size={6}
-          percent={value.length * 10 > 100 ? 100 : value.length * 10}
-          showInfo={false}
-        />
-      </div>
-    ) : null;
-  };
+
   return (
-    <div className={styles.main}>
-      <h3>注册</h3>
-      <Form form={form} name="UserRegister" onFinish={onFinish}>
-        <FormItem
-          name="email"
-          rules={[
-            {
-              required: true,
-              message: '请输入邮箱地址!',
-            },
-            {
-              type: 'email',
-              message: '邮箱地址格式错误!',
-            },
-          ]}
-        >
-          <Input size="large" placeholder="邮箱" />
-        </FormItem>
-        <Popover
-          getPopupContainer={(node) => {
-            if (node?.parentNode) {
-              return node.parentNode as HTMLElement;
-            }
-            return node;
+    <div className={styles.container}>
+      <Helmet>
+        <title>
+          {"用户注册"}
+          {Settings.title && ` - ${Settings.title}`}
+        </title>
+      </Helmet>
+      <div
+        style={{
+          flex: "1",
+          padding: "32px 0",
+        }}
+      >
+        <LoginForm
+          form={form}
+          contentStyle={{
+            minWidth: 280,
+            maxWidth: "75vw",
           }}
-          content={
-            open && (
-              <div
-                style={{
-                  padding: '4px 0',
-                }}
-              >
-                {passwordStatusMap[getPasswordStatus()]}
-                {renderPasswordProgress()}
-                <div
-                  style={{
-                    marginTop: 10,
-                  }}
-                >
-                  <span>请至少输入 6 个字符。请不要使用容易被猜到的密码。</span>
-                </div>
-              </div>
-            )
-          }
-          overlayStyle={{
-            width: 240,
+          logo={<img alt="logo" src="/logo.svg" />}
+          title="YY API管理平台"
+          subTitle={"YY API平台提供通用的api接口调用"}
+          onFinish={async (values) => {
+            await registerSubmit(values);
           }}
-          placement="right"
-          open={open}
+          submitter={{
+            render: () => (
+              <Button type="primary" htmlType="submit" loading={loading} block>
+                注册
+              </Button>
+            ),
+          }}
         >
-          <FormItem
-            name="password"
-            className={
-              form.getFieldValue('password') &&
-              form.getFieldValue('password').length > 0 &&
-              styles.password
-            }
-            rules={[
+          <Tabs
+            activeKey={type}
+            onChange={setType}
+            centered
+            items={[
               {
-                validator: checkPassword,
+                key: "register",
+                label: "用户注册",
               },
             ]}
-          >
-            <Input
-              size="large"
-              type="password"
-              placeholder="至少6位密码，区分大小写"
-            />
-          </FormItem>
-        </Popover>
-        <FormItem
-          name="confirm"
-          rules={[
-            {
-              required: true,
-              message: '确认密码',
-            },
-            {
-              validator: checkConfirm,
-            },
-          ]}
-        >
-          <Input size="large" type="password" placeholder="确认密码" />
-        </FormItem>
-        <FormItem
-          name="mobile"
-          rules={[
-            {
-              required: true,
-              message: '请输入手机号!',
-            },
-            {
-              pattern: /^\d{11}$/,
-              message: '手机号格式错误!',
-            },
-          ]}
-        >
-          <Space.Compact style={{ width: '100%' }}>
-            <Select
-              size="large"
-              value={prefix}
-              onChange={changePrefix}
-              style={{
-                width: '30%',
-              }}
-            >
-              <Option value="86">+86</Option>
-              <Option value="87">+87</Option>
-            </Select>
+          />
 
-            <Input size="large" placeholder="手机号" />
-          </Space.Compact>
-        </FormItem>
-        <Row gutter={8}>
-          <Col span={16}>
-            <FormItem
-              name="captcha"
-              rules={[
-                {
-                  required: true,
-                  message: '请输入验证码!',
-                },
-              ]}
-            >
-              <Input size="large" placeholder="验证码" />
-            </FormItem>
-          </Col>
-          <Col span={8}>
-            <Button
-              size="large"
-              disabled={!!count}
-              className={styles.getCaptcha}
-              onClick={onGetCaptcha}
-            >
-              {count ? `${count} s` : '获取验证码'}
-            </Button>
-          </Col>
-        </Row>
-        <FormItem>
-          <div className={styles.footer}>
-            <Button
-              size="large"
-              loading={submitting}
-              className={styles.submit}
-              type="primary"
-              htmlType="submit"
-            >
-              <span>注册</span>
-            </Button>
-            <Link to="/user/login">
-              <span>使用已有账户登录</span>
-            </Link>
-          </div>
-        </FormItem>
-      </Form>
+          {type === "register" && (
+            <>
+              <ProFormText
+                name="userName"
+                fieldProps={{
+                  size: "large",
+                  prefix: <UserOutlined />,
+                }}
+                placeholder={"请输入呢称"}
+                rules={[
+                  {
+                    required: true,
+                    message: "呢称是必填项！",
+                  },
+                ]}
+              />
+              <ProFormText
+                name="userAccount"
+                fieldProps={{
+                  size: "large",
+                  prefix: <UserOutlined />,
+                }}
+                placeholder={"请输入用户名"}
+                rules={[
+                  {
+                    required: true,
+                    message: "用户名是必填项！",
+                  },
+                ]}
+              />
+              <ProFormText.Password
+                name="userPassword"
+                fieldProps={{
+                  size: "large",
+                  prefix: <LockOutlined />,
+                }}
+                placeholder={"请输入密码"}
+                rules={[
+                  {
+                    required: true,
+                    message: "密码是必填项！",
+                  },
+                ]}
+              />
+              <ProFormText.Password
+                name="checkPassword"
+                fieldProps={{
+                  size: "large",
+                  prefix: <LockOutlined />,
+                }}
+                placeholder={"请确认密码"}
+                rules={[
+                  {
+                    required: true,
+                    message: "确认密码是必填项！",
+                  },
+                  {
+                    validator: checkConfirm,
+                  },
+                ]}
+              />
+            </>
+          )}
+        </LoginForm>
+      </div>
+      <Footer />
     </div>
   );
 };

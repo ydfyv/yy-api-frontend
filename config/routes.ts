@@ -31,6 +31,7 @@ export default [
     path: "/admin/interface-info",
     icon: "table",
     name: "接口管理",
+    access: "canAdmin",
     routes: [
       {
         path: "/admin/interface-info/manage",

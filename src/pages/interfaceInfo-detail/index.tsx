@@ -14,6 +14,16 @@ import {
 import React, { useEffect, useState } from "react";
 import InterfaceInfoVO = API.InterfaceInfoVO;
 
+const descriptions:Record<string, string> = {
+  description: "接口描述",
+  method: "请求方式",
+  name: "接口名称",
+  requestHeader: "请求头",
+  responseHeader: "响应头",
+  status: "状态",
+  url: "请求地址",
+};
+
 const InterfaceInfoDetail: React.FC = () => {
   const params = useParams();
 
@@ -29,11 +39,13 @@ const InterfaceInfoDetail: React.FC = () => {
           setInterfaceInfo(data);
 
           const keys = Object.keys(data) as Array<keyof InterfaceInfoVO>;
-          const tempParams: any[] = keys.map((key) => ({
-            key,
-            label: key,
-            children: data[key] ?? "",
-          }));
+          const tempParams: any[] = keys
+            .filter(key => descriptions[key])
+            .map((key) => ({
+                key,
+                label: descriptions[key] ?? "",
+                children: data[key] ?? "",
+              }));
 
           setItems(tempParams);
         }
@@ -48,7 +60,7 @@ const InterfaceInfoDetail: React.FC = () => {
       <Row justify="space-around">
         <Col span={11}>
           <Card>
-            <Descriptions title="接口详情" items={items} column={1} />;
+            <Descriptions title="接口详情" items={items} column={1} />
           </Card>
         </Col>
         <Col span={11}>

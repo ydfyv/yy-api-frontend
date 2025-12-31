@@ -14,6 +14,7 @@ import { createStyles } from "antd-style";
 import React, { useState } from "react";
 import { flushSync } from "react-dom";
 import Settings from "../../../../config/defaultSettings";
+import {history, useNavigate} from "@@/exports";
 
 const useStyles = createStyles(({ token }) => {
   return {
@@ -50,43 +51,7 @@ const useStyles = createStyles(({ token }) => {
     },
   };
 });
-const ActionIcons = () => {
-  const { styles } = useStyles();
-  return (
-    <>
-      <AlipayCircleOutlined
-        key="AlipayCircleOutlined"
-        className={styles.action}
-      />
-      <TaobaoCircleOutlined
-        key="TaobaoCircleOutlined"
-        className={styles.action}
-      />
-      <WeiboCircleOutlined
-        key="WeiboCircleOutlined"
-        className={styles.action}
-      />
-    </>
-  );
-};
-const Lang = () => {
-  const { styles } = useStyles();
-  return;
-};
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => {
-  return (
-    <Alert
-      style={{
-        marginBottom: 24,
-      }}
-      message={content}
-      type="error"
-      showIcon
-    />
-  );
-};
+
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.BaseResponseUserVO_>(
     {}
@@ -130,6 +95,9 @@ const Login: React.FC = () => {
     }
   };
   const { code } = userLoginState;
+  const navigate = useNavigate();
+
+
   return (
     <div className={styles.container}>
       <Helmet>
@@ -210,7 +178,9 @@ const Login: React.FC = () => {
             }}
             className="margin8"
           >
-            <a>忘记密码 ?</a>
+            <a onClick={() => {
+              navigate("/user/register")
+            }}>注册</a>
           </div>
         </LoginForm>
       </div>
