@@ -5,7 +5,7 @@ import { LoginForm, ProFormText } from "@ant-design/pro-components";
 import { Helmet, useNavigate } from "@umijs/max";
 import { Button, Form, message, Tabs } from "antd";
 import { createStyles } from "antd-style";
-import type { FC } from "react";
+import React, { FC } from "react";
 import { useState } from "react";
 import Settings from "../../../../config/defaultSettings";
 import UserRegisterRequest = API.UserRegisterRequest;
@@ -96,7 +96,7 @@ const Register: FC = () => {
             minWidth: 280,
             maxWidth: "75vw",
           }}
-          logo={<img alt="logo" src="/logo.svg" />}
+          logo={<img alt="logo" src="/logo.svg"/>}
           title="YY API管理平台"
           subTitle={"YY API平台提供通用的api接口调用"}
           onFinish={async (values) => {
@@ -128,7 +128,7 @@ const Register: FC = () => {
                 name="userName"
                 fieldProps={{
                   size: "large",
-                  prefix: <UserOutlined />,
+                  prefix: <UserOutlined/>,
                 }}
                 placeholder={"请输入呢称"}
                 rules={[
@@ -142,7 +142,7 @@ const Register: FC = () => {
                 name="userAccount"
                 fieldProps={{
                   size: "large",
-                  prefix: <UserOutlined />,
+                  prefix: <UserOutlined/>,
                 }}
                 placeholder={"请输入用户名"}
                 rules={[
@@ -156,7 +156,7 @@ const Register: FC = () => {
                 name="userPassword"
                 fieldProps={{
                   size: "large",
-                  prefix: <LockOutlined />,
+                  prefix: <LockOutlined/>,
                 }}
                 placeholder={"请输入密码"}
                 rules={[
@@ -170,7 +170,7 @@ const Register: FC = () => {
                 name="checkPassword"
                 fieldProps={{
                   size: "large",
-                  prefix: <LockOutlined />,
+                  prefix: <LockOutlined/>,
                 }}
                 placeholder={"请确认密码"}
                 rules={[
@@ -185,9 +185,20 @@ const Register: FC = () => {
               />
             </>
           )}
+
+          <div
+            style={{
+              textAlign: "right"
+            }}
+            className="margin8"
+          >
+            <a onClick={() => {
+              navigate("/user/login")
+            }}>已有账号，登录</a>
+          </div>
         </LoginForm>
       </div>
-      <Footer />
+      <Footer/>
     </div>
   );
 };

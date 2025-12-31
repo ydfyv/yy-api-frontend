@@ -10,20 +10,6 @@ const indexPage: React.FC = () => {
   const [dataSource, setDataSource] = useState<InterfaceInfoVO[]>();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // 获取接口列表
-    try {
-      listInterfaceInfoVoByPageUsingPost({
-        current: 1,
-        pageSize: 10,
-      }).then((res) => {
-        setDataSource(res.data?.records);
-      });
-    } catch (error: any) {
-      message.warning(error.message);
-    }
-  }, []);
-
   return (
     <PageContainer>
       <ProList<InterfaceInfoVO>
