@@ -47,6 +47,11 @@ export default [
     hideInMenu: true,
   },
   {
+    name: "接口调用分析页",
+    path: "/analyse",
+    component: "./analyse",
+  },
+  {
     name: "个人页",
     icon: "user",
     path: "/account",

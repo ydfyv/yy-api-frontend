@@ -17,6 +17,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseListInterfaceInvokeVO_ = {
+    code?: number;
+    data?: InterfaceInvokeVO[];
+    message?: string;
+  };
+
   type BaseResponseLoginUserVO_ = {
     code?: number;
     data?: LoginUserVO;
@@ -114,6 +120,11 @@ declare namespace API {
     id?: number;
   };
 
+  type getTopInterfaceInvokeVOListUsingGETParams = {
+    /** top */
+    top: number;
+  };
+
   type getUserByIdUsingGETParams = {
     /** id */
     id?: number;
@@ -200,6 +211,12 @@ declare namespace API {
     updateTime?: string;
     url?: string;
     user?: UserVO;
+  };
+
+  type InterfaceInvokeVO = {
+    interfaceName?: string;
+    invokeCount?: number;
+    proportion?: string;
   };
 
   type LoginUserVO = {

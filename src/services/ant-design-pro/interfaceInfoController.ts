@@ -80,6 +80,24 @@ export async function getInterfaceInfoVoByIdUsingGet(
   );
 }
 
+/** getTopInterfaceInvokeVOList GET /api/interfaceInfo/interfaceInvoke/top */
+export async function getTopInterfaceInvokeVoListUsingGet(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getTopInterfaceInvokeVOListUsingGETParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseListInterfaceInvokeVO_>(
+    "/api/interfaceInfo/interfaceInvoke/top",
+    {
+      method: "GET",
+      params: {
+        ...params,
+      },
+      ...(options || {}),
+    }
+  );
+}
+
 /** listInterfaceInfoByPage POST /api/interfaceInfo/list/page */
 export async function listInterfaceInfoByPageUsingPost(
   body: API.InterfaceInfoQueryRequest,
