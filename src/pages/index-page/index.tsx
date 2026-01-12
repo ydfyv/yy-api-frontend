@@ -1,14 +1,28 @@
-import { listInterfaceInfoVoByPageUsingPost } from "@/services/ant-design-pro/interfaceInfoController";
-import { PageContainer } from "@ant-design/pro-components";
-import ProList from "@ant-design/pro-list";
-import { useNavigate } from "@umijs/max";
-import { message } from "antd";
 import React, { useEffect, useState } from "react";
+import ProList from "@ant-design/pro-list";
+import { message } from "antd";
+import { listInterfaceInfoVoByPageUsingPost } from "@/services/ant-design-pro/interfaceInfoController";
 import InterfaceInfoVO = API.InterfaceInfoVO;
+import {useNavigate} from "@umijs/max";
+import {PageContainer} from "@ant-design/pro-components";
 
 const indexPage: React.FC = () => {
   const [dataSource, setDataSource] = useState<InterfaceInfoVO[]>();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // 获取接口列表
+    try {
+      listInterfaceInfoVoByPageUsingPost({
+        current: 1,
+        pageSize: 10,
+      }).then((res) => {
+        setDataSource(res.data?.records);
+      });
+    } catch (error: any) {
+      message.warning(error.message);
+    }
+  }, []);
 
   return (
     <PageContainer>
@@ -24,20 +38,6 @@ const indexPage: React.FC = () => {
           },
         }}
         onDataSourceChange={setDataSource}
-        pagination={{
-          pageSize: 10,
-        }}
-        request={async (params) => {
-          const res = await listInterfaceInfoVoByPageUsingPost({
-            current: params.current,
-            pageSize: params.pageSize,
-          });
-          return {
-            data: res.data?.records,
-            success: res.code === 0,
-            total: res.data?.total,
-          }
-        }}
         metas={{
           title: {
             dataIndex: "name",
@@ -61,12 +61,7 @@ const indexPage: React.FC = () => {
           // },
           actions: {
             render: (text, row, index, action) => [
-              <a
-                onClick={() => {
-                  navigate(`/interfaceInfo-detail/${row.id}`);
-                }}
-                key="link"
-              >
+              <a onClick={() => {navigate(`/interfaceInfo-detail/${row.id}`)}} key="link">
                 详情
               </a>,
             ],

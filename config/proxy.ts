@@ -40,4 +40,11 @@ export default {
       pathRewrite: { '^': '' },
     },
   },
+  // 代理所有的/api 请求到 http://localhost:8101
+  dev: {
+    '/api/': {
+      target: 'http://localhost:8101',
+      changeOrigin: true,
+    }
+  }
 };

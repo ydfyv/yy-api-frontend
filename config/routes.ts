@@ -1,6 +1,6 @@
 export default [
-  { path: "/", redirect: "/index" },
-  { name: "首页", path: "/index", component: "./index-page/index" },
+  { path: "/", redirect: "/index-page" },
+  { name: "首页", path: "/index-page", component: "./index-page/index" },
   {
     path: "/user",
     layout: false,
