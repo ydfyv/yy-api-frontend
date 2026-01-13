@@ -182,6 +182,24 @@ export async function onlineUsingPost(
   });
 }
 
+/** getOpenApiDoc GET /api/interfaceInfo/openApiDoc */
+export async function getOpenApiDocUsingGet(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.getOpenApiDocUsingGETParams,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseMapStringObject_>(
+    "/api/interfaceInfo/openApiDoc",
+    {
+      method: "GET",
+      params: {
+        ...params,
+      },
+      ...(options || {}),
+    }
+  );
+}
+
 /** updateInterfaceInfo POST /api/interfaceInfo/update */
 export async function updateInterfaceInfoUsingPost(
   body: API.InterfaceInfoUpdateRequest,

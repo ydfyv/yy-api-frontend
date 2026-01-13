@@ -20,8 +20,8 @@ const descriptions:Record<string, string> = {
   description: "接口描述",
   method: "请求方式",
   name: "接口名称",
-  requestHeader: "请求头",
-  responseHeader: "响应头",
+  requestParams: "请求头",
+  responseParams: "响应头",
   status: "状态",
   url: "请求地址",
 };
@@ -68,7 +68,7 @@ const InterfaceInfoDetail: React.FC = () => {
         <Col span={11}>
           <Tabs>
             <Tabs.TabPane tab="调试" key="1">
-              <DebugView />
+              <DebugView path={interfaceInfo.path}/>
             </Tabs.TabPane>
             <Tabs.TabPane tab="代码示例" key="2">
               <CodeEditorView/>

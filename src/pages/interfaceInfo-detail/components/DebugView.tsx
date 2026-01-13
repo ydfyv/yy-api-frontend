@@ -1,42 +1,32 @@
-import { debugInterfaceUsingPost } from "@/services/ant-design-pro/interfaceInfoController";
-import { Button, Card, message } from "antd";
-import React, { useState } from "react";
+import { getOpenApiDocUsingGet } from "@/services/ant-design-pro/interfaceInfoController";
+import { Card, message } from "antd";
+import React, { useEffect, useState } from "react";
 import SwaggerUI from "swagger-ui-react";
 import "swagger-ui-react/swagger-ui.css";
+import Loading from "@/loading";
 
-const DebugView: React.FC = () => {
-  const [result, setResult] = useState<string>("");
+interface props {
+  path?: string;
+}
 
-  const debug = async () => {
-    try {
-      const res = await debugInterfaceUsingPost(
-        JSON.stringify({ name: "李明" })
-      );
-      setResult(res.data ?? "");
-    } catch (error: any) {
-      message.warning(error.message);
+const DebugView: React.FC<props> = ({ path }) => {
+  const [apiObj, setApiObj] = useState<object>({});
+
+  useEffect(() => {
+    if (path) {
+      getOpenApiDocUsingGet({ path: path }).then((res) => {
+        if (res.code === 0) {
+          setApiObj(res.data ?? {});
+        } else {
+          message.warning(res.message);
+        }
+      });
     }
-  };
+  }, [path]);
 
   return (
     <Card>
-      <SwaggerUI
-        url="/api/v2/api-docs?group=api"
-        requestInterceptor={(req: { url: string }) => {
-          if (req.url?.startsWith("http://localhost:8101/api/api")) {
-            req.url = req.url.replace("http://localhost:8101/api/api", "http://localhost:8101/api");
-          }
-          return req;
-        }}
-      />
-      <Button
-        onClick={async () => {
-          await debug();
-        }}
-      >
-        调试
-      </Button>
-      <span>结果：{result}</span>
+      {Object.entries(apiObj).length > 0 ? <SwaggerUI spec={apiObj} withCredentials={true} /> : <Loading /> }
     </Card>
   );
 };

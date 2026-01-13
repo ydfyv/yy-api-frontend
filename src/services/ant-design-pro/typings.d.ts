@@ -35,6 +35,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseMapStringObject_ = {
+    code?: number;
+    data?: Record<string, any>;
+    message?: string;
+  };
+
   type BaseResponsePageInterfaceInfo_ = {
     code?: number;
     data?: PageInterfaceInfo_;
@@ -115,6 +121,11 @@ declare namespace API {
     id?: number;
   };
 
+  type getOpenApiDocUsingGETParams = {
+    /** path */
+    path: string;
+  };
+
   type getPostVOByIdUsingGETParams = {
     /** id */
     id?: number;
@@ -145,21 +156,23 @@ declare namespace API {
     id?: number;
     isDelete?: number;
     method?: string;
+    methodName?: string;
     name?: string;
-    requestHeader?: string;
-    responseHeader?: string;
+    path?: string;
+    requestParams?: string;
+    responseParams?: string;
     status?: string;
     updateTime?: string;
-    url?: string;
     userId?: number;
   };
 
   type InterfaceInfoAddRequest = {
     description?: string;
     method?: string;
+    methodName?: string;
     name?: string;
-    requestHeader?: string;
-    responseHeader?: string;
+    requestParams?: string;
+    responseParams?: string;
     url?: string;
   };
 
@@ -167,9 +180,10 @@ declare namespace API {
     description?: string;
     id?: number;
     method?: string;
+    methodName?: string;
     name?: string;
-    requestHeader?: string;
-    responseHeader?: string;
+    requestParams?: string;
+    responseParams?: string;
     status?: string;
     url?: string;
   };
@@ -179,6 +193,7 @@ declare namespace API {
     description?: string;
     id?: number;
     method?: string;
+    methodName?: string;
     name?: string;
     pageSize?: number;
     sortField?: string;
@@ -203,20 +218,22 @@ declare namespace API {
     createTime?: string;
     description?: string;
     id?: number;
+    isDelete?: number;
     method?: string;
+    methodName?: string;
     name?: string;
-    requestHeader?: string;
-    responseHeader?: string;
-    status?: number;
+    path?: string;
+    requestParams?: string;
+    responseParams?: string;
+    status?: string;
     updateTime?: string;
-    url?: string;
     user?: UserVO;
   };
 
   type InterfaceInvokeVO = {
     interfaceName?: string;
     invokeCount?: number;
-    proportion?: string;
+    proportion?: number;
   };
 
   type LoginUserVO = {
