@@ -4,7 +4,8 @@ import {
   addInterfaceInfoUsingPost,
   deleteInterfaceInfoUsingPost,
   editInterfaceInfoUsingPost,
-  listInterfaceInfoByPageUsingPost, offlineUsingPost,
+  listInterfaceInfoByPageUsingPost,
+  offlineUsingPost,
   onlineUsingPost,
 } from "@/services/ant-design-pro/interfaceInfoController";
 import { PlusOutlined } from "@ant-design/icons";
@@ -23,6 +24,7 @@ import React, { useRef, useState } from "react";
 import InterfaceInfoQueryRequest = API.InterfaceInfoQueryRequest;
 import InterfaceInfo = API.InterfaceInfo;
 import InterfaceInfoAddRequest = API.InterfaceInfoAddRequest;
+import JsonEditor from "@/pages/admin/interface-info/manage/components/JsonEditor";
 
 const TableList: React.FC = () => {
   const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
@@ -59,31 +61,62 @@ const TableList: React.FC = () => {
       formItemProps: {
         rules: [{ required: true }],
       },
-      // sorter: true,
-      // hideInForm: true,
-      // renderText: (val: string) => `${val}万`,
+    },
+    {
+      title: "接口方法名称",
+      dataIndex: "methodName",
+      valueType: "text",
+      formItemProps: {
+        rules: [{ required: true }],
+      },
     },
     {
       title: "接口路径",
-      dataIndex: "url",
+      dataIndex: "path",
       hideInSearch: true,
       formItemProps: {
         rules: [
           { required: true },
-          {
-            validator: (_rule: any, value: string, callback) => {
-              if (value && !/^https?:\/\//.test(value)) {
-                callback("请输入正确的接口路径");
-              }
-              callback();
-            },
-          },
+          // {
+          //   validator: (_rule: any, value: string, callback) => {
+          //     if (value && !/^https?:\/\//.test(value)) {
+          //       callback("请输入正确的接口路径");
+          //     }
+          //     callback();
+          //   },
+          // },
         ],
       },
     },
     {
-      title: "请求头",
-      dataIndex: "requestHeader",
+      title: "请求参数",
+      dataIndex: "requestParams",
+      hideInSearch: true,
+      ellipsis: true,
+      valueType: "text",
+      formItemProps: {
+        rules: [
+          {
+            validator: (_rule, _value, callback) => {
+              if (_value) {
+                try {
+                  JSON.parse(_value as string);
+                  callback();
+                } catch (e) {
+                  callback("请输入正确的JSON格式");
+                }
+              } else {
+                callback();
+              }
+            },
+          },
+        ],
+      },
+      renderFormItem: () => <JsonEditor />
+    },
+    {
+      title: "响应参数",
+      dataIndex: "responseParams",
       valueType: "textarea",
       hideInSearch: true,
       ellipsis: true,
@@ -105,31 +138,7 @@ const TableList: React.FC = () => {
           },
         ],
       },
-    },
-    {
-      title: "响应头",
-      dataIndex: "responseHeader",
-      valueType: "textarea",
-      hideInSearch: true,
-      ellipsis: true,
-      formItemProps: {
-        rules: [
-          {
-            validator: (_rule, _value, callback) => {
-              if (_value) {
-                try {
-                  JSON.parse(_value as string);
-                  callback();
-                } catch (e) {
-                  callback("请输入正确的JSON格式");
-                }
-              } else {
-                callback();
-              }
-            },
-          },
-        ],
-      },
+      renderFormItem: () => <JsonEditor />
     },
     {
       title: "请求方式",

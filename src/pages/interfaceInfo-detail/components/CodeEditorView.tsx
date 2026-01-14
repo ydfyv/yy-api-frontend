@@ -1,5 +1,5 @@
 import { Editor } from "@monaco-editor/react";
-import { Radio } from "antd";
+import {Divider, Radio, Space} from "antd";
 import { RadioChangeEvent } from "antd/es/radio/interface";
 import React, { useState } from "react";
 
@@ -23,6 +23,13 @@ const exampleCode: Record<string, string> = {
   csharp: 'Console.WriteLine("功能暂未开发，敬请期待！");',
   php: 'echo "功能暂未开发，敬请期待！";',
 };
+
+const jdkXML = `
+<dependency>
+    <groupId>io.github.ydfyv</groupId>
+    <artifactId>yyapi-client-sdk</artifactId>
+    <version>0.0.1</version>
+</dependency>`;
 
 const CodeEditorView: React.FC = () => {
   const handleEditorDidMount = (editor: any, monaco: any) => {
@@ -55,7 +62,7 @@ const CodeEditorView: React.FC = () => {
         </Radio.Group>
       </div>
 
-      <div style={{ height: "700px", width: "100%" }}>
+      <div style={{ height: "300px", width: "100%" }}>
         <Editor
           language={language}
           value={code}
@@ -72,6 +79,28 @@ const CodeEditorView: React.FC = () => {
           onMount={handleEditorDidMount}
           theme="vs-dark"
         />
+
+        {language === "java" && (
+          <>
+            <Divider />
+            <Editor
+              language={"xml"}
+              value={jdkXML}
+              options={{
+                minimap: {
+                  enabled: true,
+                  side: "right",
+                  size: "proportional",
+                  showSlider: "mouseover",
+                  renderCharacters: true,
+                  maxColumn: 120,
+                },
+              }}
+              onMount={handleEditorDidMount}
+              theme="vs-dark"
+            />
+          </>
+        )}
       </div>
     </>
   );
