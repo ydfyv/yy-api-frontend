@@ -21,7 +21,7 @@ const JsonEditor: React.FC<Props> = ({ value = "{}", onChange }) => {
       onChange: () => {
         try {
           const content = newEditor.get();
-          onChange?.(JSON.stringify(content, null, 2));
+          onChange?.(JSON.stringify(content));
         } catch (err) {
           console.warn('JSONEditor内容不合法！', err);
         }
