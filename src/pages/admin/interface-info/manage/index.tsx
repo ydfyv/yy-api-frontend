@@ -1,4 +1,5 @@
 import CreateModal from "@/pages/admin/interface-info/manage/components/CreateModal";
+import JsonEditor from "@/pages/admin/interface-info/manage/components/JsonEditor";
 import UpdateModal from "@/pages/admin/interface-info/manage/components/UpdateModal";
 import {
   addInterfaceInfoUsingPost,
@@ -19,12 +20,11 @@ import {
   ProDescriptions,
   ProTable,
 } from "@ant-design/pro-components";
-import { Button, Drawer, message, Popconfirm, Space } from "antd";
+import { Button, Drawer, message, Popconfirm } from "antd";
 import React, { useRef, useState } from "react";
 import InterfaceInfoQueryRequest = API.InterfaceInfoQueryRequest;
 import InterfaceInfo = API.InterfaceInfo;
 import InterfaceInfoAddRequest = API.InterfaceInfoAddRequest;
-import JsonEditor from "@/pages/admin/interface-info/manage/components/JsonEditor";
 
 const TableList: React.FC = () => {
   const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
@@ -65,6 +65,22 @@ const TableList: React.FC = () => {
     {
       title: "接口方法名称",
       dataIndex: "methodName",
+      valueType: "text",
+      formItemProps: {
+        rules: [{ required: true }],
+      },
+    },
+    {
+      title: "服务uri",
+      dataIndex: "serverUri",
+      valueType: "text",
+      formItemProps: {
+        rules: [{ required: true }],
+      },
+    },
+    {
+      title: "路径转发前缀",
+      dataIndex: "transPattern",
       valueType: "text",
       formItemProps: {
         rules: [{ required: true }],
@@ -112,7 +128,7 @@ const TableList: React.FC = () => {
           },
         ],
       },
-      renderFormItem: () => <JsonEditor />
+      renderFormItem: () => <JsonEditor />,
     },
     {
       title: "响应参数",
@@ -138,7 +154,7 @@ const TableList: React.FC = () => {
           },
         ],
       },
-      renderFormItem: () => <JsonEditor />
+      renderFormItem: () => <JsonEditor />,
     },
     {
       title: "请求方式",
@@ -187,9 +203,10 @@ const TableList: React.FC = () => {
       key: "action",
       valueType: "option",
       render: (_, entity) => (
-        <Space size={"small"}>
+        <>
           <Button
             type={"link"}
+            style={{ marginRight: "7px" }}
             onClick={() => {
               setUpdateModalVisible(true);
               setModel(entity);
@@ -197,6 +214,7 @@ const TableList: React.FC = () => {
           >
             编辑
           </Button>
+
           <Popconfirm
             title={"确定删除吗？"}
             onConfirm={async () => {
@@ -207,7 +225,7 @@ const TableList: React.FC = () => {
               删除
             </Button>
           </Popconfirm>
-        </Space>
+        </>
       ),
     },
     {

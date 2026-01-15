@@ -161,7 +161,9 @@ declare namespace API {
     path?: string;
     requestParams?: string;
     responseParams?: string;
+    serverUri?: string;
     status?: string;
+    transPattern?: string;
     updateTime?: string;
     userId?: number;
   };
@@ -171,9 +173,11 @@ declare namespace API {
     method?: string;
     methodName?: string;
     name?: string;
+    path?: string;
     requestParams?: string;
     responseParams?: string;
-    url?: string;
+    serverUri?: string;
+    transPattern?: string;
   };
 
   type InterfaceInfoEditRequest = {
@@ -182,10 +186,11 @@ declare namespace API {
     method?: string;
     methodName?: string;
     name?: string;
+    path?: string;
     requestParams?: string;
     responseParams?: string;
+    serverUri?: string;
     status?: string;
-    url?: string;
   };
 
   type InterfaceInfoQueryRequest = {
@@ -196,22 +201,25 @@ declare namespace API {
     methodName?: string;
     name?: string;
     pageSize?: number;
+    path?: string;
+    serverUri?: string;
     sortField?: string;
     sortOrder?: string;
     status?: string;
-    url?: string;
     userId?: number;
   };
 
   type InterfaceInfoUpdateRequest = {
     description?: string;
     id?: number;
-    method?: number;
+    method?: string;
+    methodName?: string;
     name?: string;
-    requestHeader?: string;
-    responseHeader?: string;
-    status?: number;
-    url?: string;
+    path?: string;
+    requestParams?: string;
+    responseParams?: string;
+    serverUri?: string;
+    status?: string;
   };
 
   type InterfaceInfoVO = {

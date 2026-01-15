@@ -12,16 +12,19 @@ interface props {
 const DebugView: React.FC<props> = ({ path }) => {
   const [apiObj, setApiObj] = useState<object>({});
 
-  useEffect(() => {
-    if (path) {
-      getOpenApiDocUsingGet({ path: path }).then((res) => {
-        if (res.code === 0) {
+  useEffect( () => {
+    const getOpenApi = async () => {
+      try {
+        if (path) {
+          const res = await getOpenApiDocUsingGet({path: path});
           setApiObj(res.data ?? {});
-        } else {
-          message.warning(res.message);
         }
-      });
+      } catch (error: any) {
+        message.error(error.message);
+      }
     }
+
+    getOpenApi();
   }, [path]);
 
   return (
