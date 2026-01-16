@@ -286,10 +286,10 @@ const AvatarView = ({ avatar }: { avatar: string }) => {
 };
 
 const SecretKey = ({
-  items,
-  update,
-  handleCopy,
-}: {
+                     items,
+                     update,
+                     handleCopy,
+                   }: {
   items: DescriptionsProps["items"];
   update: () => Promise<void>;
   handleCopy: () => Promise<void>;
@@ -322,7 +322,7 @@ const SecretKey = ({
           }}
         >
           <RedoOutlined />
-          更新密钥
+          生成秘钥
         </Button>
       </Space>
     </>
