@@ -28,7 +28,7 @@ const jdkXML = `
 <dependency>
     <groupId>io.github.ydfyv</groupId>
     <artifactId>yyapi-client-sdk</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.3</version>
 </dependency>`;
 
 const CodeEditorView: React.FC = () => {

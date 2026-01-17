@@ -70,17 +70,19 @@ const DebugView: React.FC<props> = ({ path }) => {
   }, [path]);
 
   return (
-    <Card>
-      {Object.entries(apiObj).length > 0 ? (
-        <SwaggerUI
-          spec={apiObj}
-          withCredentials={true}
-          requestInterceptor={getReq}
-        />
-      ) : (
-        <Loading />
-      )}
-    </Card>
+    <div style={{maxHeight: "700px", overflow: "auto"}}>
+      <Card>
+        {Object.entries(apiObj).length > 0 ? (
+          <SwaggerUI
+            spec={apiObj}
+            withCredentials={true}
+            requestInterceptor={getReq}
+          />
+        ) : (
+          <Loading />
+        )}
+      </Card>
+    </div>
   );
 };
 

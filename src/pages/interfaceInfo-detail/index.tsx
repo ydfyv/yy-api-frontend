@@ -58,7 +58,7 @@ const InterfaceInfoDetail: React.FC = () => {
   }, []);
 
   return (
-    <PageContainer style={{ minHeight: "850px" }}>
+    <PageContainer>
       <Row justify="space-around">
         <Col span={11}>
           <Card>

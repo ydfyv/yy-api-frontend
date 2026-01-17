@@ -12,6 +12,15 @@ const PieChartContainer: React.FC<Props> = ( {top}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<Chart | null>(null);
 
+  const  getTopData = async () => {
+    try {
+      const res = await getTopInterfaceInvokeVoListUsingGet({ top: top || 3 });
+      setData(res.data ?? []);
+    } catch (error:any) {
+      message.error(`获取TOP${top}接口调用数据失败！${error.message}`);
+    }
+  }
+
   const [data, setData] = useState<InterfaceInvokeVO[]>([]);
 
   useEffect(() => {
@@ -58,13 +67,7 @@ const PieChartContainer: React.FC<Props> = ( {top}) => {
   }, [data]);
 
   useEffect(() => {
-    getTopInterfaceInvokeVoListUsingGet({ top: top || 3 }).then((res) => {
-      if (res.code === 0) {
-        setData(res.data ?? []);
-      } else {
-        message.warning(`获取TOP${top}接口调用数据失败！${res.message}`);
-      }
-    });
+    getTopData();
   }, [top]);
 
   useEffect(() => {
