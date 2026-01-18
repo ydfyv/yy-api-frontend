@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ProList from "@ant-design/pro-list";
+import { ProList } from "@ant-design/pro-components";
 import { message } from "antd";
 import { listInterfaceInfoVoByPageUsingPost } from "@/services/ant-design-pro/interfaceInfoController";
 import InterfaceInfoVO = API.InterfaceInfoVO;
