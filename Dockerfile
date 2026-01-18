@@ -5,7 +5,7 @@ WORKDIR /app
 
 # 复制 package 文件并安装依赖（利用 Docker 缓存）
 COPY package*.json ./
-RUN npm install --registry=https://registry.npmmirror.com
+RUN npm install --registry=https://registry.npm.taobao.org
 
 # 复制源码
 COPY . .
